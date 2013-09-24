@@ -22,8 +22,8 @@ Game.Screen.playScreen = {
     _centerY : 0,
     enter : function() {
         var map = [];
-        var mapWidth = 500;
-        var mapHeight = 500;
+        var mapWidth = 250;//500;
+        var mapHeight = 250;//500;
 
         for ( var x = 0; x < mapWidth; x++){
             map.push([]);
@@ -31,7 +31,8 @@ Game.Screen.playScreen = {
                 map[x].push(Game.Tile.nullTile);
             }
         }
-        //map generator
+        //Cellular map generator
+        /*
         var generator = new ROT.Map.Cellular(mapWidth, mapHeight);
         generator.randomize(0.5);
         var totalIterations = 3;
@@ -47,6 +48,20 @@ Game.Screen.playScreen = {
             }
         });
         
+        this._map = new Game.Map(map);
+        */
+        //Uniform Map Generator
+        mapWidth = 250;
+        mapHeight = 250;
+        var generator = new ROT.Map.Uniform(mapWidth,mapHeight,{timeLimit : 5000});
+        generator.create(function(x,y,v){
+            if (v == 0){
+                map[x][y] = Game.Tile.floorTile;
+            }
+            else{
+                map[x][y] = Game.Tile.wallTile;
+            }
+        });
         this._map = new Game.Map(map);
         //debug message
         console.log("Entered play screen");
