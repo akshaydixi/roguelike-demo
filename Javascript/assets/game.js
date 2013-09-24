@@ -14,8 +14,8 @@ var Game = {
             });
         }
         bindEventToScreen('keydown');
-        //bindEventToScreen('keyup');
-        //bindEventToScreen('keypress');
+        bindEventToScreen('keyup');
+        bindEventToScreen('keypress');
     },
     refresh : function(){
         this._display.clear();
@@ -36,7 +36,7 @@ var Game = {
             }
             this.getDisplay().clear();
             this._currentScreen = screen;
-            if(!this._currentScreen !== null){
+            if(this._currentScreen !== null){
                 this._currentScreen.enter();
                 this.refresh();
             }

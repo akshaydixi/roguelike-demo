@@ -13,10 +13,11 @@ Game.Entity = function(properties){
             if (key != 'init' && key != 'name' && !this.hasOwnProperty(key)) {
                 this[key] = mixins[i][key];
             }
+
         }
         this._attachedMixins[mixins[i].name] = true;
         if(mixins[i].groupName){
-            this._attachedMixinsGroup[mixins[i].groupName] = true;
+            this._attachedMixinGroups[mixins[i].groupName] = true;
         }
         if(mixins[i].init){
             mixins[i].init.call(this,properties);

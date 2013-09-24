@@ -46,12 +46,12 @@ Game.Screen.playScreen = {
             }
         });
         
-        this._map = new Game.Map(map);
-        this._player = new Game.Entity ( Game.PlayerTemplate);
-        var position = this._map.getRandomFloorPosition();
-        this._player.setX(position.x);
-        this._player.setY(position.y);
-
+        this._player = new Game.Entity (Game.PlayerTemplate);
+        //console.log(this._player.groupName);
+        //console.log(this._player._x,this._player._y);
+        this._map = new Game.Map(map,this._player);
+        this._map.getEngine().start();
+        
        
         //Uniform Map Generator
         /*
@@ -79,6 +79,7 @@ Game.Screen.playScreen = {
         var newX = this._player.getX() + dX;
         var newY = this._player.getY() + dY;
         this._player.tryMove(newX,newY,this._map);
+        
     },
     
     
@@ -100,12 +101,18 @@ Game.Screen.playScreen = {
                 display.draw(x-topLeftX, y-topLeftY, tile.getChar(),tile.getForeground(), tile.getBackground());
             }
         }
-        display.draw(
-                this._player.getX() - topLeftX,
-                this._player.getY() - topLeftY,
-                this._player.getChar(),
-                this._player.getForeground(),
-                this._player.getBackground());
+        
+        var entities = this._map.getEntities();
+        for (var i = 0; i < entities.length; i++){
+            var entity = entities[i];
+            if( entity.getX() >= topLeftX && entity.getY() >= topLeftY && entity.getX() < topLeftX + screenWidth && entity.getY() < topLeftY + screenHeight){
+                display.draw(entity.getX() - topLeftX,
+                        entity.getY() - topLeftY,
+                        entity.getChar(),
+                        entity.getForeground(),
+                        entity.getBackground());
+            }
+        }
     },
     
     
@@ -117,18 +124,22 @@ Game.Screen.playScreen = {
             else if(inputData.keyCode === ROT.VK_ESCAPE){
                 Game.switchScreen(Game.Screen.loseScreen);
             }
-            if(inputData.keyCode === ROT.VK_LEFT){
+            else {
+                if(inputData.keyCode === ROT.VK_LEFT){
                 this.move(-1,0);
-            }
-            else if(inputData.keyCode === ROT.VK_RIGHT){
+                }
+                else if(inputData.keyCode === ROT.VK_RIGHT){
                 this.move(1,0);
-            }
-            else if(inputData.keyCode === ROT.VK_UP){
+                }
+                else if(inputData.keyCode === ROT.VK_UP){
                 this.move(0,-1);
-            }
-            else if(inputData.keyCode === ROT.VK_DOWN){
+                }
+                else if(inputData.keyCode === ROT.VK_DOWN){
                 this.move(0,1);
-            }
+                }
+                //console.log(this._map.getEngine()._lock); 
+                this._map.getEngine().unlock();
+            }      
         }
     }
 }
