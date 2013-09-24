@@ -5,7 +5,7 @@ Game.Entity = function(properties){
     this._x = properties['x'] || 0;
     this._y = properties['y'] || 0;
     
-    this.attachedMixins = {};
+    this._attachedMixins = {};
     var mixins = properties['mixins'] || [];
     for (var i = 0; i < mixins.length; i++) {
         for( var key in mixins[i]){
