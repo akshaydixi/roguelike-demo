@@ -4,8 +4,9 @@ Game.Entity = function(properties){
     this._name = properties['name'] || '';
     this._x = properties['x'] || 0;
     this._y = properties['y'] || 0;
-    
+    this._map = null;
     this._attachedMixins = {};
+    this._attachedMixinGroups = {};
     var mixins = properties['mixins'] || [];
     for (var i = 0; i < mixins.length; i++) {
         for( var key in mixins[i]){
@@ -14,20 +15,32 @@ Game.Entity = function(properties){
             }
         }
         this._attachedMixins[mixins[i].name] = true;
+        if(mixins[i].groupName){
+            this._attachedMixinsGroup[mixins[i].groupName] = true;
+        }
         if(mixins[i].init){
             mixins[i].init.call(this,properties);
         }
+        
     }
 }
 
 Game.Entity.extend(Game.Glyph);
 
+Game.Entity.prototype.setMap = function(map){
+    this._map = map;
+}
+
+Game.Entity.prototype.getMap = function() {
+    return this._map;
+}
+
 Game.Entity.prototype.hasMixin = function(obj){
-        if ( typeof(obj) == 'object'){
+        if ( typeof obj === 'object'){
             return this._attachedMixins[obj.name];
         }
         else {
-            return this._attachedMixins[name];
+            return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
         }
 }
 Game.Entity.prototype.setName = function(name) {

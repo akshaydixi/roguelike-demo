@@ -1,9 +1,29 @@
 Game.Map = function(tiles) {
     this._tiles = tiles;
-    //cache width and height
-    
+    //cache width and height 
     this._width = tiles.length;
     this._height = tiles[0].length;
+    this._entities = [];
+    this._scheduler = new ROT.Scheduler.Simple();
+    this._engine = new ROT.Engine(this._scheduler);
+
+};
+
+Game.Map.prototype.getEngine = function(){
+    return this._engine;
+};
+
+Game.Map.prototype.getEntities = function(){
+    return this._entities;
+};
+
+Game.Map.prototype.getEntityAt = function(x, y){
+    for (var entity in this._entities){
+        if (entity.getX() == x && entity.getY() == y){
+            return entity;
+        }
+    }
+    return false;
 };
 
 Game.Map.prototype.getWidth = function(){
@@ -35,6 +55,6 @@ Game.Map.prototype.getRandomFloorPosition = function(){
             x = Math.floor(Math.random() * this._width);
             y = Math.floor(Math.random() * this._height);
         }while( this.getTile(x,y) != Game.Tile.floorTile);
-        return {x: x,y: y};
+        return {x: x, y: y};
 }
 
