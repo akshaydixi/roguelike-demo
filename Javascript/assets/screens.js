@@ -18,16 +18,21 @@ Game.Screen.startScreen = {
 
 Game.Screen.playScreen = {
     _map : null,
+    _centerX : 0,
+    _centerY : 0,
     enter : function() {
         var map = [];
-        for ( var x = 0; x < 80; x++){
+        var mapWidth = 500;
+        var mapHeight = 500;
+
+        for ( var x = 0; x < mapWidth; x++){
             map.push([]);
-            for (var y = 0; y < 24; y++){
+            for (var y = 0; y < mapHeight; y++){
                 map[x].push(Game.Tile.nullTile);
             }
         }
         //map generator
-        var generator = new ROT.Map.Cellular(80, 24);
+        var generator = new ROT.Map.Cellular(mapWidth, mapHeight);
         generator.randomize(0.5);
         var totalIterations = 3;
         for ( var i = 0; i < totalIterations - 1; i++){
@@ -47,16 +52,43 @@ Game.Screen.playScreen = {
         console.log("Entered play screen");
     
     },
+    
+    
+    move : function(dX , dY){
+   //     console.log(this._centerX,this._centerY);
+        this._centerX = Math.max(0,Math.min(this._map.getWidth() - 1, this._centerX + dX));
+        this._centerY = Math.max(0,Math.min(this._map.getHeight() - 1, this._centerY + dY));
+    },
+    
+    
     exit : function() { console.log("Exited play screen");},
+    
+    
     render : function(display){
-        for ( var x = 0; x < this._map.getWidth(); x++){
-            for( var y = 0; y < this._map.getHeight(); y++){
+        var screenWidth = Game.getScreenWidth();
+        var screenHeight = Game.getScreenHeight();
+        var topLeftX = Math.max(0,this._centerX - (screenWidth/2));
+        var topLeftX = Math.min(topLeftX,this._map.getWidth() - screenWidth);
+
+        var topLeftY = Math.max(0, this._centerY - (screenHeight/2));
+        topLeftY = Math.min(topLeftY, this._map.getHeight() - screenHeight);
+    
+        for ( var x = topLeftX; x < screenWidth + topLeftX; x++){
+            for( var y = topLeftY; y < screenHeight + topLeftY; y++){
                 var glyph = this._map.getTile(x,y);
                 var glyph = glyph.getGlyph();
-                display.draw(x, y, glyph.getChar(),glyph.getForeground(), glyph.getBackground());
+                display.draw(x-topLeftX, y-topLeftY, glyph.getChar(),glyph.getForeground(), glyph.getBackground());
             }
         }
+        display.draw(
+                this._centerX - topLeftX,
+                this._centerY - topLeftY,
+                '@',
+                'white',
+                'black');
     },
+    
+    
     handleInput : function(inputType, inputData){
         if(inputType === 'keydown'){
             if(inputData.keyCode === ROT.VK_RETURN){
@@ -64,6 +96,18 @@ Game.Screen.playScreen = {
             }
             else if(inputData.keyCode === ROT.VK_ESCAPE){
                 Game.switchScreen(Game.Screen.loseScreen);
+            }
+            if(inputData.keyCode === ROT.VK_LEFT){
+                this.move(-1,0);
+            }
+            else if(inputData.keyCode === ROT.VK_RIGHT){
+                this.move(1,0);
+            }
+            else if(inputData.keyCode === ROT.VK_UP){
+                this.move(0,-1);
+            }
+            else if(inputData.keyCode === ROT.VK_DOWN){
+                this.move(0,1);
             }
         }
     }
