@@ -14,8 +14,8 @@ var Game = {
             });
         }
         bindEventToScreen('keydown');
-        bindEventToScreen('keyup');
-        bindEventToScreen('keypress');
+        //bindEventToScreen('keyup');
+        //bindEventToScreen('keypress');
     },
     refresh : function(){
         this._display.clear();

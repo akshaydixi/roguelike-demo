@@ -24,7 +24,7 @@ Game.Entity = function(properties){
         }
         
     }
-}
+};
 
 Game.Entity.extend(Game.Glyph);
 
